@@ -1,6 +1,7 @@
 include_directories(${CMAKE_BINARY_DIR} ${CMAKE_SOURCE_DIR}/db ${CMAKE_SOURCE_DIR}/lib ${CMAKE_SOURCE_DIR}/tools ${CMAKE_SOURCE_DIR}/sched ${CMAKE_SOURCE_DIR}/vda	${MYSQL_INCLUDE_DIR} ${OPENSSL_INCLUDE_DIR} )
 
-add_library(sched STATIC credit.cpp sched_shmem.cpp sched_util.cpp sched_util_basic.cpp sched_config.cpp sched_limit.cpp ../db/boinc_db.cpp ../db/db_base.cpp ../tools/process_result_template.cpp ../tools/process_input_template.cpp ../tools/backend_lib.cpp)
+add_library(sched STATIC credit.cpp sched_shmem.cpp sched_util.cpp sched_util_basic.cpp sched_config.cpp sched_limit.cpp 
+${CMAKE_SOURCE_DIR}/db/boinc_db.cpp ${CMAKE_SOURCE_DIR}/db/db_base.cpp ${CMAKE_SOURCE_DIR}/tools/process_result_template.cpp ${CMAKE_SOURCE_DIR}/tools/process_input_template.cpp ${CMAKE_SOURCE_DIR}/tools/backend_lib.cpp)
 
 add_executable(adjust_user_priority adjust_user_priority.cpp)
 target_link_libraries(adjust_user_priority sched boinc_crypt boinc ${OPENSSL_LIBRARIES} ${MYSQL_LIBRARIES})

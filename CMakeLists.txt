@@ -33,6 +33,7 @@ add_subdirectory(${CMAKE_SOURCE_DIR}/apps)
 endif(API)
 
 if(LIBS)
+add_subdirectory(${CMAKE_SOURCE_DIR}/sched)
 add_subdirectory(${CMAKE_SOURCE_DIR}/lib)
 endif(LIBS)
 
@@ -47,7 +48,8 @@ endif(SERVER)
 if(CLIENT)
 add_subdirectory(${CMAKE_SOURCE_DIR}/client)
 add_subdirectory(${CMAKE_SOURCE_DIR}/clientgui)
+#screensaver
+add_subdirectory(${CMAKE_SOURCE_DIR}/clientscr)
 endif(CLIENT)
 
-add_subdirectory(${CMAKE_SOURCE_DIR}/sched)
 add_subdirectory(${CMAKE_SOURCE_DIR}/vda)
