@@ -190,7 +190,11 @@ CHECK_FUNCTION_EXISTS(gmtime_r HAVE_GMTIME_R)
 CHECK_INCLUDE_FILES(grp.h HAVE_GRP_H)
 
 #/* Define to 1 if you have the <gtk/gtk.h> header file. */
-CHECK_INCLUDE_FILES(gtk/gtk.h HAVE_GTK_GTK_H)
+IF(GTK3_FOUND)
+	SET(CMAKE_REQUIRED_INCLUDES ${CMAKE_REQUIRED_INCLUDES} ${GTK3_INCLUDE_DIRS})
+	CHECK_INCLUDE_FILES(gtk/gtk.h HAVE_GTK_GTK_H)
+ENDIF(GTK3_FOUND)
+
 
 #/* Define to 1 if you have the <ieeefp.h> header file. */
 CHECK_INCLUDE_FILES(ieeefp.h HAVE_IEEEFP_H)
@@ -205,47 +209,46 @@ CHECK_INCLUDE_FILES(intrin.h HAVE_INTRIN_H)
 CHECK_INCLUDE_FILES(inttypes.h HAVE_INTTYPES_H)
 
 #/* Define to 1 if you have the c library */
-#cmakedefine HAVE_LIBC
-CHECK_LIBRARY_EXISTS(c "abort" "/lib/" HAVE_LIBC) 
+FIND_LIBRARY(HAVE_LIBC c)
 
 #/* Define to 1 if you have a functional curl library. */
 SET(HAVE_LIBCURL ${CURL_FOUND})
 
 #/* Define to 1 if you have the c_nonshared library */
-#cmakedefine HAVE_LIBC_NONSHARED
+#FIND_LIBRARY(HAVE_LIBC_NONSHARED c)
 
 #/* Define to 1 if you have the gcc library */
-#cmakedefine HAVE_LIBGCC
+FIND_LIBRARY(HAVE_LIBGCC gcc)
 
 #/* Define to 1 if you have the gcc_eh library */
-#cmakedefine HAVE_LIBGCC_EH
+FIND_LIBRARY(HAVE_LIBGCC_EH gcc_eh)
 
 #/* Define to 1 if you have the `gdi32' library (-lgdi32). */
-#cmakedefine HAVE_LIBGDI32
+FIND_LIBRARY(HAVE_LIBGDI32 gdi32)
 
 #/* Define to 1 if you have the iphlpapi library */
-#cmakedefine HAVE_LIBIPHLPAPI
+FIND_LIBRARY(HAVE_LIBIPHLPAPI iphlpapi)
 
 #/* Define to 1 if you have the math library */
-#cmakedefine HAVE_LIBM
+FIND_LIBRARY(HAVE_LIBM m)
 
 #/* Define to 1 if you have the msvcr100 library */
-#cmakedefine HAVE_LIBMSVCR100
+FIND_LIBRARY(HAVE_LIBMSVCR100 msvcr100)
 
 #/* Define to 1 if you have the msvcr110 library */
-#cmakedefine HAVE_LIBMSVCR110
+FIND_LIBRARY(HAVE_LIBMSVCR110 msvcr110)
 
 #/* Define to 1 if you have the msvcr90 library */
-#cmakedefine HAVE_LIBMSVCR90
+FIND_LIBRARY(HAVE_LIBMSVCR90 msvcr90)
 
 #/* Define to 1 if you have the msvcr90d library */
-#cmakedefine HAVE_LIBMSVCR90D
+FIND_LIBRARY(HAVE_LIBMSVCR90D msvcr90d)
 
 #/* Define to 1 if you have the <libnotify/notify.h> header file. */
 CHECK_INCLUDE_FILES(libnotify/notify.h HAVE_LIBNOTIFY_NOTIFY_H)
 
 #/* Define to 1 if you have the NVIDIA API library */
-#cmakedefine HAVE_LIBNVAPI
+FIND_LIBRARY(HAVE_LIBNVAPI nvapi)
 
 #/* Define to 1 if you have the pthread library */
 SET(HAVE_LIBPTHREAD ${CMAKE_USE_PTHREADS_INIT})
@@ -257,13 +260,13 @@ SET(HAVE_LIBPTHREAD ${CMAKE_USE_PTHREADS_INIT})
 #cmakedefine HAVE_LIBSENSAPI
 
 #/* Define to 1 if you have the stdc++ library */
-#cmakedefine HAVE_LIBSTDC__
+FIND_LIBRARY(HAVE_LIBSTDC__ stdc++)
 
 #/* Define to 1 if you have the userenv library */
-#cmakedefine HAVE_LIBUSERENV
+FIND_LIBRARY(HAVE_LIBUSERENV userenv)
 
 #/* Define to 1 if you have the gdi32 library */
-#cmakedefine HAVE_LIBWGDI32
+FIND_LIBRARY(HAVE_LIBWGDI32 gdi32)
 
 #/* Define to 1 if you have the WinHttp library */
 #cmakedefine HAVE_LIBWINHTTP
@@ -312,7 +315,7 @@ include(TestForSTDNamespace)
 SET(HAVE_NAMESPACES NOT ${CMAKE_NO_STD_NAMESPACE})
 
 #/* Define to 1 if you have the <ndir.h> header file, and it defines `DIR'. */
-#CHECK_INCLUDE_FILES(ndir.h HAVE_NDIR_H)
+CHECK_SYMBOL_EXISTS(DIR ndir.h HAVE_NDIR_H)
 
 #/* Define to 1 if you have the <netdb.h> header file. */
 CHECK_INCLUDE_FILES(netdb.h HAVE_NETDB_H)
@@ -321,7 +324,11 @@ CHECK_INCLUDE_FILES(netdb.h HAVE_NETDB_H)
 CHECK_INCLUDE_FILES(netinet/ether.h HAVE_NETINET_ETHER_H)
 
 #/* Define to 1 if you have the <netinet/if_ether.h> header file. */
-CHECK_INCLUDE_FILES(netinet/if_ether.h HAVE_NETINET_IF_ETHER_H)
+if(${CMAKE_SYSTEM_NAME} MATCHES "BSD")
+	CHECK_INCLUDE_FILES("sys/types.h;sys/socket.h;netinet/in.h;netinet/if_ether.h" HAVE_NETINET_IF_ETHER_H)
+else()
+	CHECK_INCLUDE_FILES(netinet/if_ether.h HAVE_NETINET_IF_ETHER_H)
+endif(${CMAKE_SYSTEM_NAME} MATCHES "BSD")
 
 #/* Define to 1 if you have the <netinet/in.h> header file. */
 CHECK_INCLUDE_FILES(netinet/in.h HAVE_NETINET_IN_H)
@@ -330,7 +337,11 @@ CHECK_INCLUDE_FILES(netinet/in.h HAVE_NETINET_IN_H)
 CHECK_INCLUDE_FILES(netinet/tcp.h HAVE_NETINET_TCP_H)
 
 #/* Define to 1 if you have the <net/if_arp.h> header file. */
-CHECK_INCLUDE_FILES(net/if_arp.h HAVE_NET_IF_ARP_H)
+if(${CMAKE_SYSTEM_NAME} MATCHES "BSD")
+	CHECK_INCLUDE_FILES("sys/types.h;sys/socket.h;net/if_arp.h" HAVE_NETINET_IF_ARP_H)
+else()
+	CHECK_INCLUDE_FILES(net/if_arp.h HAVE_NET_IF_ARP_H)
+endif(${CMAKE_SYSTEM_NAME} MATCHES "BSD")
 
 #/* Define to 1 if you have the <net/if.h> header file. */
 CHECK_INCLUDE_FILES(net/if.h HAVE_NET_IF_H)
@@ -361,6 +372,9 @@ CHECK_INCLUDE_FILES(procfs.h HAVE_PROCFS_H)
 
 #/* Define if you have POSIX threads libraries and header files. */
 #cmakedefine HAVE_PTHREAD
+#IF(HAVE_LIBPTHREAD AND )
+#SET(HAVE_PTHREAD)
+#ENDIF()
 
 #/* Have PTHREAD_PRIO_INHERIT. */
 #cmakedefine HAVE_PTHREAD_PRIO_INHERIT
@@ -369,7 +383,7 @@ CHECK_INCLUDE_FILES(procfs.h HAVE_PROCFS_H)
 CHECK_FUNCTION_EXISTS(putenv HAVE_PUTENV)
 
 #/* Define to 1 if you have the resolv library */
-find_library(HAVE_RESOLV resolv)
+FIND_LIBRARY(HAVE_RESOLV resolv)
 #MESSAGE(STATUS "resolv library: ${HAVE_RESOLV}")
 
 #/* Define to 1 if you have the `res_init' function. */
@@ -487,7 +501,7 @@ CHECK_STRUCT_HAS_MEMBER(tm tm_zone time.h HAVE_STRUCT_TM_TM_ZONE LANGUAGE CXX)
 CHECK_INCLUDE_FILES(sys/auxv.h HAVE_SYS_AUXV_H)
 
 #/* Define to 1 if you have the <sys/dir.h> header file, and it defines `DIR'.*/
-#CHECK_PROTOTYPE_EXISTS(DIR sys/dir.h HAVE_SYS_DIR_H)
+CHECK_SYMBOL_EXISTS(DIR sys/dir.h HAVE_SYS_DIR_H)
 
 #/* Define to 1 if you have the <sys/fcntl.h> header file. */
 CHECK_INCLUDE_FILES(sys/fcntl.h HAVE_SYS_FCNTL_H)
@@ -508,7 +522,7 @@ CHECK_INCLUDE_FILES(sys/mount.h HAVE_SYS_MOUNT_H)
 CHECK_INCLUDE_FILES(sys/msg.h HAVE_SYS_MSG_H)
 
 #/* Define to 1 if you have the <sys/ndir.h> header file, and it defines `DIR'.*/
-#CHECK_INCLUDE_FILES(sys/ndir.h HAVE_SYS_NDIR_H)
+CHECK_SYMBOL_EXISTS(DIR sys/ndir.h HAVE_SYS_NDIR_H)
 
 #/* Define to 1 if you have the <sys/param.h> header file. */
 CHECK_INCLUDE_FILES(sys/param.h HAVE_SYS_PARAM_H)
@@ -569,7 +583,11 @@ CHECK_INCLUDE_FILES(sys/un.h HAVE_SYS_UN_H)
 CHECK_INCLUDE_FILES(sys/utsname.h HAVE_SYS_UTSNAME_H)
 
 #/* Define to 1 if you have the <sys/vmmeter.h> header file. */
-CHECK_INCLUDE_FILES(sys/vmmeter.h HAVE_SYS_VMMETER_H)
+if(${CMAKE_SYSTEM_NAME} MATCHES "BSD")
+	CHECK_INCLUDE_FILES("sys/types.h;sys/vmmeter.h" HAVE_SYS_VMMETER_H)
+else()
+	CHECK_INCLUDE_FILES(sys/vmmeter.h HAVE_SYS_VMMETER_H)
+endif(${CMAKE_SYSTEM_NAME} MATCHES "BSD")
 
 #/* Define to 1 if you have the <sys/wait.h> header file. */
 CHECK_INCLUDE_FILES(sys/wait.h HAVE_SYS_WAIT_H)
@@ -637,19 +655,19 @@ CHECK_INCLUDE_FILES(xmmintrin.h HAVE_XMMINTRIN_H)
 #/* Define to 1 if /proc/meminfo exists */
 #cmakedefine HAVE__PROC_MEMINFO
 FIND_FILE(HAVE__PROC_MEMINFO "proc/meminfo" PATH "/" NO_DEFAULT_PATH  NO_CMAKE_ENVIRONMENT_PATH)
-MESSAGE(STATUS "/proc/meminfo exists: ${HAVE__PROC_MEMINFO}")
+#MESSAGE(STATUS "/proc/meminfo exists: ${HAVE__PROC_MEMINFO}")
 
 #/* Define to 1 if /proc/self/exe exists */
 FIND_FILE(HAVE__PROC_SELF_EXE "proc/self/exe" PATH "/" NO_DEFAULT_PATH  NO_CMAKE_ENVIRONMENT_PATH)
-MESSAGE(STATUS "/proc/self/exe exists: ${HAVE__PROC_SELF_EXE}")
+#MESSAGE(STATUS "/proc/self/exe exists: ${HAVE__PROC_SELF_EXE}")
 
 #/* Define to 1 if /proc/self/psinfo exists */
 FIND_FILE(HAVE__PROC_SELF_PSINFO "proc/self/psinfo" PATH "/" NO_DEFAULT_PATH  NO_CMAKE_ENVIRONMENT_PATH)
-MESSAGE(STATUS "/proc/self/psinfo exists: ${HAVE__PROC_SELF_PSINFO}")
+#MESSAGE(STATUS "/proc/self/psinfo exists: ${HAVE__PROC_SELF_PSINFO}")
 
 #/* Define to 1 if /proc/self/stat exists */
 FIND_FILE(HAVE__PROC_SELF_STAT "proc/self/stat" PATH "/" NO_DEFAULT_PATH  NO_CMAKE_ENVIRONMENT_PATH)
-MESSAGE(STATUS "/proc/self/stat exists: ${HAVE__PROC_SELF_STAT}")
+#MESSAGE(STATUS "/proc/self/stat exists: ${HAVE__PROC_SELF_STAT}")
 
 #/* Define to 1 if you have the `_strdup' function. */
 CHECK_FUNCTION_EXISTS(_strdup HAVE__STRDUP)
@@ -750,10 +768,12 @@ SET(HOSTTYPEALT ${GUESS})
 #cmakedefine STDC_HEADERS
 
 #/* Define to 1 if you can safely include both <sys/time.h> and <time.h>. */
-#cmakedefine TIME_WITH_SYS_TIME
+CHECK_INCLUDE_FILES("sys/time.h;time.h" TIME_WITH_SYS_TIME)
 
 #/* Define to 1 if your <sys/time.h> declares `struct tm'. */
 #cmakedefine TM_IN_SYS_TIME
+list(APPEND CMAKE_REQUIRED_DEFINITIONS -D_GNU_SOURCE)
+CHECK_SYMBOL_EXISTS(clock time.h TM_IN_SYS_TIME)
 
 #/* "Define to 1 if you want to use the openssl crypto library" */
 SET(USE_OPENSSL ${OPENSSL_FOUND})

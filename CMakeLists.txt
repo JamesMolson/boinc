@@ -12,6 +12,8 @@ OPTION(APPS "Build BOINC apps" ON)
 OPTION(FCGI "fcgi support" ON)
 OPTION(FORTRAN "Build the fortran api layer" ON)
 
+#any extra packages, including system install ones go in
+#/usr/local
 if(${CMAKE_SYSTEM_NAME} MATCHES "BSD")
 	include_directories(SYSTEM "/usr/local/include")
 endif(${CMAKE_SYSTEM_NAME} MATCHES "BSD")
@@ -28,28 +30,35 @@ include(${CMAKE_SOURCE_DIR}/config.cmake)
 file(COPY project_specific_defines.h DESTINATION ${CMAKE_BINARY_DIR})
 
 if(API)
-add_subdirectory(${CMAKE_SOURCE_DIR}/api)
-add_subdirectory(${CMAKE_SOURCE_DIR}/apps)
+	add_subdirectory(${CMAKE_SOURCE_DIR}/api)
 endif(API)
 
+if(APPS)
+	add_subdirectory(${CMAKE_SOURCE_DIR}/apps)
+endif(APPS)
+
 if(LIBS)
-add_subdirectory(${CMAKE_SOURCE_DIR}/sched)
-add_subdirectory(${CMAKE_SOURCE_DIR}/lib)
+	add_subdirectory(${CMAKE_SOURCE_DIR}/lib)
 endif(LIBS)
 
 if(ZIP)
-add_subdirectory(${CMAKE_SOURCE_DIR}/zip)
+	add_subdirectory(${CMAKE_SOURCE_DIR}/zip)
 endif(ZIP)
 
-if(SERVER)
-add_subdirectory(${CMAKE_SOURCE_DIR}/tools)
-endif(SERVER)
+if(SERVER OR FCGI OR LIBS)
+	add_subdirectory(${CMAKE_SOURCE_DIR}/sched)
+	add_subdirectory(${CMAKE_SOURCE_DIR}/tools)
+endif(SERVER OR FCGI OR LIBS)
 
 if(CLIENT)
-add_subdirectory(${CMAKE_SOURCE_DIR}/client)
-add_subdirectory(${CMAKE_SOURCE_DIR}/clientgui)
-#screensaver
-add_subdirectory(${CMAKE_SOURCE_DIR}/clientscr)
+	add_subdirectory(${CMAKE_SOURCE_DIR}/client)
+
+	#screensaver
+	add_subdirectory(${CMAKE_SOURCE_DIR}/clientscr)
 endif(CLIENT)
+
+if(MANAGER)
+	add_subdirectory(${CMAKE_SOURCE_DIR}/clientgui)
+endif(MANAGER)
 
 add_subdirectory(${CMAKE_SOURCE_DIR}/vda)
