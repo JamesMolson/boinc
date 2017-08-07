@@ -85,14 +85,15 @@ define('RATE_NEGATIVE_IMAGE_HEIGHT','9');
 define('REPORT_POST_IMAGE', 'img/report_post.png');
 define('REPORT_POST_IMAGE_HEIGHT','9');
 
-define ('SOLUTION', 'This answered my question');
-define ('SUFFERER', 'I also have this question');
-define ('OFF_TOPIC', 'Off-topic');
+define('SOLUTION', tra('This answered my question'));
+define('SUFFERER', tra('I also have this question'));
+define('OFF_TOPIC', tra('Off-topic'));
 
 define ('DEFAULT_LOW_RATING_THRESHOLD', -25);
 define ('DEFAULT_HIGH_RATING_THRESHOLD', 5);
 
-// A list of what kind of special users exist
+// special user attributes
+//
 define('S_MODERATOR', 0);
 define('S_ADMIN', 1);
 define('S_DEV', 2);
@@ -788,24 +789,31 @@ function post_rules() {
     } else {
       $project_rules="";
     }
-    return tra("
+    return sprintf("
         <ul>
-        <li> Posts must be 'kid friendly': they may not contain
-            content that is obscene, hate-related,
-            sexually explicit or suggestive.
-        <li> No commercial advertisements.
-        <li> No links to web sites involving sexual content,
-            gambling, or intolerance of others.
-        <li> No messages intended to annoy or antagonize other people,
-            or to hijack a thread.
-        <li> No messages that are deliberately hostile, threatening, or insulting.
-        <li> No abusive comments involving race, religion,
-            nationality, gender, class or sexuality.
-        <li> The posting privileges of violators may be suspended or revoked.
-        <li> If your account is suspended, don't create a new one.
-        ").$project_rules."
+        <li> %s
+        <li> %s
+        <li> %s
+        <li> %s
+        <li> %s
+        <li> %s
+        <li> %s
+        <li> %s
+        <li> %s
+        %s
         </ul>
-    ";
+        ",
+        tra("Posts must be 'kid friendly': they may not contain content that is obscene, hate-related, sexually explicit or suggestive."),
+        tra("No commercial advertisements."),
+        tra("No links to web sites involving sexual content, gambling, or intolerance of others."),
+        tra("No messages intended to annoy or antagonize other people, or to hijack a thread."),
+        tra("No messages that are deliberately hostile, threatening, or insulting."),
+        tra("No abusive messages involving race, religion, nationality, gender, class or sexuality."),
+        tra("Posts that violate these rules may be deleted."),
+        tra("The posting privileges of violators may be suspended or revoked."),
+        tra("If your account is suspended, don't create a new one."),
+        $project_rules
+    );
 }
 
 function post_warning($forum=null) {
@@ -823,7 +831,6 @@ function post_warning($forum=null) {
     $x .= "
         <font size=-2>
         ".tra("Rules:").post_rules()."
-        <a href=moderation.php>".tra("More info")."</a>
         </font>
         </td></tr></table>
     ";

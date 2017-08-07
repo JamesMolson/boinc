@@ -82,6 +82,9 @@ if (!defined('POSTAL_CODE')) {
 if (!defined('NO_COMPUTING')) {
     define('NO_COMPUTING', false);
 }
+if (!defined('USER_HOME')) {
+    define('USER_HOME', 'home.php');
+}
 
 // sleep this long on any login failure
 // (slow the rate of hacker attacks)
@@ -219,7 +222,7 @@ function page_head(
     $did_page_head = true;
     $url_base = url_base();
 
-    $rssname = PROJECT . " RSS 2.0";
+    $rssname = "RSS 2.0";
     $rsslink = $url_base."rss_main.php";
 
     if (!$caching) {
@@ -342,7 +345,7 @@ function error_page($msg) {
 // takes argument in second and returns a human formatted time string
 // in the form D days + h Hours + m Min + s sec.
 
-function time_diff($x) {
+function time_diff($x, $res=3) {
     $days    = (int)($x/86400);
     $hours   = (int)(($x-$days*86400)/3600);
     $minutes = (int)(($x-$days*86400-$hours*3600)/60);
@@ -352,13 +355,13 @@ function time_diff($x) {
     if ($days) {
         $datestring .= "$days ".tra("days")." ";
     }
-    if ($hours || strlen($datestring)) {
+    if ($res>0 && ($hours || strlen($datestring))) {
         $datestring .= "$hours ".tra("hours")." ";
     }
-    if ($minutes || strlen($datestring)) {
+    if ($res>1 && ($minutes || strlen($datestring))) {
         $datestring .= "$minutes ".tra("min")." ";
     }
-    if ($seconds) {
+    if ($res>2 && ($seconds)) {
         $datestring .= "$seconds ".tra("sec")." ";
     }
 
@@ -1001,7 +1004,6 @@ function redirect_to_secure_url($url) {
     ) {
         Header("Location: ".SECURE_URL_BASE."/$url");
         exit;
-
     }
 }
 

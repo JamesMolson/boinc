@@ -121,7 +121,7 @@ function ordered_display($areas, $sort) {
     start_table("table-striped");
     row_heading_array(array(
         (($sort=="area")?"<a title='Sort by name' href=projects.php>Name</a>":"Name")
-            ."<br><span class=note>Mouse over for details; click to visit web site</span>",
+            ."<br><small>Mouse over for details; click to visit web site</small>",
         ($sort!="area")?"<a title='Sort by category' href=projects.php?sort=area>Category</a>":"Category",
         "Area",
         "Sponsor",
@@ -136,9 +136,9 @@ function ordered_display($areas, $sort) {
         if (array_key_exists(5, $p) && $p[5]) {
             $img= "<img align=right vspace=4 hspace=4 src=images/$p[5]>";
         }
-        $arg = "$img <b>Sponsor:</b> $p[2]<br><b>Area:</b> $p[3]<br><b>Goal:</b> $p[4]";
+        $arg = "$img <font size=.8em><b>Goal:</b> $p[4] <br> <b>Sponsor:</b> $p[2]<br><b>Area:</b> $p[3]";
         $arg = addslashes($arg);
-        $x = "<a href=$p[1] onmouseover=\"Tip('$arg', WIDTH, 500)\" onmouseout=\"UnTip()\">$p[0]</a>";
+        $x = "<a href=$p[1] onmouseover=\"Tip('$arg', WIDTH, 500, FONTSIZE, '12px', BGCOLOR, '#eeddcc')\" onmouseout=\"UnTip()\">$p[0]</a>";
         $home = $p[2];
         $area = $p['area'];
         $spec_area = $p[3];
@@ -151,7 +151,7 @@ function ordered_display($areas, $sort) {
             $p = tra("Unknown");
         } else {
             $pd = get_platforms_string($master_url, false);
-            $p .= "<br><a href=projects.php onmouseover=\"Tip('Supported platforms:<br>$pd', WIDTH, 240)\">Details</a>";
+            $p .= "<br><a href=projects.php onmouseover=\"Tip('Supported platforms:<br>$pd', WIDTH, 240, FONTSIZE, '12px', BGCOLOR, '#eeddcc')\" onmouseout=\"UnTip()\"><small>Details</small></a>";
         }
         echo "<tr class=row$n>
             <td valign=top>$x</td>
