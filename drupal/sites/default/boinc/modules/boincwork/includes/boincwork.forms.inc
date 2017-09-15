@@ -1006,12 +1006,17 @@ function boincwork_projectprefs_form(&$form_state, $venue) {
   
   // Load any existing preferences from BOINC account
   $prefs = boincwork_load_prefs('project', $venue);
-  
   // Take note if this is not an established preference set on the account
   if (isset($prefs['@attributes']['cleared'])) {
     $established = FALSE;
   }
-  
+
+  // Extract modified tag if present
+  $modified = NULL;
+  if (isset($prefs['modified']['@value'])) {
+    $modified = $prefs['modified']['@value'];
+  }
+
   $venue_is_default = FALSE;
   if ($account->boincuser_default_pref_set) {
     if ($account->boincuser_default_pref_set == $venue) {
@@ -1062,9 +1067,13 @@ function boincwork_projectprefs_form(&$form_state, $venue) {
   $form['#tree'] = TRUE;
   
   // Hidden elements
+  $form['modified'] = array(
+    '#type' => 'hidden',
+    '#value' => $modified,
+  );
   $form['venue'] = array(
     '#type' => 'hidden',
-    '#value' => $venue
+    '#value' => $venue,
   );
   
   $form['separator_top'] = array(
@@ -1238,10 +1247,12 @@ function boincwork_add_project_specific_prefs(&$form, $prefs) {
   ksort($ordered_array);
   $primed_array = array_merge($ordered_array, $unordered_array);
   $xml = array('project_specific_preferences' => $primed_array);
-    
   foreach ($xml['project_specific_preferences'] as $wrapped_element) {
     $type = key($wrapped_element);
-    $element= reset($wrapped_element);
+    $element = reset($wrapped_element);
+    if ($type == 'app_overrides') {
+      $element = boincwork_query_app_for_project_specific_prefs($element);
+    }
     boincwork_generate_prefs_element($form, $type, $element, $prefs['project_specific']);
   }
 }
